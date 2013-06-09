@@ -6,4 +6,5 @@
 
 Import-Module "$root\modules\savpek"
 
-
+$env:_profile = $root
+$env:_gitf = "$root\..\\"
