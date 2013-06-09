@@ -4,6 +4,7 @@
 # Load posh-git example profile
 . "$root\Modules\posh-git\profile.example.ps1"
 
+Import-Module "$root\modules\PsGet"
 Import-Module "$root\modules\savpek"
 
 $env:_profile = $root
