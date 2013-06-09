@@ -7,5 +7,5 @@
 Import-Module "$root\modules\PsGet"
 Import-Module "$root\modules\savpek"
 
-$env:_profile = $root
-$env:_gitf = "$root\..\\"
+$xGitHub = "$root\..\\"
+$xProfile = $root
