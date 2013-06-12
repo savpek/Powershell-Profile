@@ -29,4 +29,12 @@ Function Close-Notepads {
     Stop-Process -Name *Notepad2*;
 }
 
+Function Remove-Service {
+  PROCESS {
+    $serviceName = $_.Name;
+    $service = Get-WmiObject -Class Win32_Service -Filter "Name='$serviceName'";
+    $service.delete();
+  }
+}
+
 Set-StrictMode -Off
