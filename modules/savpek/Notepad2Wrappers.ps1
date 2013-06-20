@@ -2,7 +2,15 @@ Set-StrictMode -Version Latest
 
 Function Open-Notepads {
     PROCESS {
-        $command = 'Notepad2 /g "' + $_.LineNumber + ',0" "' + $_.Path + '"';
+        if($_.Path -eq "") 
+        {
+            $filePath = $_.Path;
+        }
+        else {
+            $filePath = $_.FullName;
+        }
+
+        $command = 'Notepad2 /g "' + $_.LineNumber + ',0" "' + $filePath + '"';
         $command;
         Invoke-Expression $command;
     }
