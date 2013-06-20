@@ -9,6 +9,7 @@ Import-Module "$root\modules\savpek"
 
 $xGitHub = "$root\..\\"
 $xProfile = $root
+$xOwnModules = "$root\savpek\modules"
 
 $env:path += ";$root\bin\Notepad2"
 $env:GIT_EDITOR = "Notepad2.exe"
