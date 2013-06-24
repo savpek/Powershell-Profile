@@ -2,7 +2,7 @@ Set-StrictMode -Version Latest
 
 Function Open-Notepads {
     PROCESS {
-        if($_.Path -eq "") 
+        if($_.Path -ne "") 
         {
             $filePath = $_.Path;
         }
