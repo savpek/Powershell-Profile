@@ -4,8 +4,10 @@
 # Load posh-git example profile
 . "$root\Modules\posh-git\profile.example.ps1"
 
+. $root\IseTheme.ps1
+
 Import-Module "$root\modules\PsGet"
-Import-Module "$root\modules\savpek"
+Import-Module "$root\modules\Custom"
 
 $xGitHub = "$root\..\\"
 $xProfile = $root
