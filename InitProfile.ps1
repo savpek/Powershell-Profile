@@ -1,17 +1,20 @@
 ﻿$root = Split-Path -parent $PSCommandPath
 
-# Custom modules, remember, dont add last "\" at end of path ...
-# Load posh-git example profile
-. "$root\Modules\posh-git\profile.example.ps1"
-
 . $root\IseTheme.ps1
 
-Import-Module "$root\modules\PsGet"
-Import-Module "$root\modules\Custom"
+$env:PSModulePath += ";$root\modules\"
 
-$xGitHub = "$root\..\\"
-$xProfile = $root
-$xOwnModules = "$root\savpek\modules"
+Import-Module PsGet
+Import-Module Custom
+Import-Module Posh-Git
+
+$customPaths = New-Object PSObject
+$customPaths | Add-Member -type NoteProperty -Name Root -Value $root
+
+foreach($moduleFolder in (Get-ChildItem -Directory "$root\modules\")) 
+{
+    $customPaths | Add-Member -type NoteProperty -Name $moduleFolder.Name -Value $moduleFolder
+}
 
 $env:path += ";$root\bin\Notepad2"
 $env:GIT_EDITOR = "Notepad2.exe"

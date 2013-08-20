@@ -1,10 +1,15 @@
 ﻿Set-StrictMode -Version Latest
 
 $psScriptRoot = Split-Path -parent $PSCommandPath
+
 Push-Location $psScriptRoot
-. .\Notepad2Wrappers.ps1
-. .\gitExtensions.ps1
-. .\serviceExtensions.ps1
+
+$files = Get-ChildItem *.ps1
+foreach($file in $files) 
+{
+. $file
+}
+
 Pop-Location
 
 Set-StrictMode -Off
