@@ -33,8 +33,6 @@ function Find-OrphanTestProjects ()
             Write-Host "Multiple matching project for: $testProject, Matching: $matching" -ForegroundColor Yellow
         }
     }
-
-
 }
 
 function Repair-VisualStudioStructure() 
@@ -47,8 +45,13 @@ function Move-VisualStudioProject()
 {
 }
 
-function UpdateProjectName([string] $solutionContents, [string]$projectGuid, [string]$newProjectName) {
-    
+
+function SanitizeForRegex([string] $pattern) {
+    return $pattern -replace "-", "\-" -replace "}","\}" -replace '"','\"'
+}
+
+function UpdateProjectName([string] $solutionContents, [string] $projectGuid, [string] $newProjectName) 
+{
     if($solutionContents -notlike "*$projectGuid*")
     {
         Throw "Invalid guid, cannot find guid in solution contents."
@@ -60,3 +63,16 @@ function UpdateProjectName([string] $solutionContents, [string]$projectGuid, [st
     return $solutionContents -replace $pattern, $replacement
 }
 
+function UpdateProjectPath([string] $solutionContents, [string] $projectGuid, [string] $newProjectPath) 
+{
+    if($solutionContents -notlike "*$projectGuid*")
+    {
+        Throw "Invalid guid, cannot find guid in solution contents."
+    }
+
+    $pattern = "Project\(`"{$projectGuid}`"\) = `"(.*?)`", `".*?`", `"{(.*?)}"
+    $pattern = SanitizeForRegEx($pattern)
+    $replacement = "Project(`"{$projectGuid}`") = `"`$1`", `"$newProjectPath`", `"{`$2}"
+
+    return $solutionContents -replace $pattern, $replacement
+}
