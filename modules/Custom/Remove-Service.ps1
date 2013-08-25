@@ -5,4 +5,3 @@ Function Remove-Service {
     $service.delete();
   }
 }
-

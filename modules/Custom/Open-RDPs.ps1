@@ -19,7 +19,3 @@ Function Open-RDPs {
         Invoke-Expression "mstsc.exe /v:$server /w:1280 /h:960 $arguments"
     }
 }
-
-Function Close-RDPs {
-    Stop-Process -Name mstsc
-}
