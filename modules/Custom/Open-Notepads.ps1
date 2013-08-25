@@ -16,8 +16,4 @@ Function Open-Notepads {
     }
 }
 
-Function Close-Notepads {
-    Stop-Process -Name *Notepad2*;
-}
-
 Set-StrictMode -Off

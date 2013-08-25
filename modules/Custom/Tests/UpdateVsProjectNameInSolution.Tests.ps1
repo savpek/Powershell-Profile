@@ -1,5 +1,6 @@
 if(-not $pester) { return }
 
+
 $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 
 . $scriptPath\..\Functions\Common.ps1
