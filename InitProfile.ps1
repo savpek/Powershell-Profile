@@ -6,7 +6,13 @@ $env:PSModulePath += ";$root\modules\"
 
 Import-Module PsGet
 Import-Module Custom
-Import-Module Posh-Git
+
+try {
+    Import-Module Posh-Git
+}
+catch {
+    Write-Warning "Cannot load Posh-Git module, is it installed?"
+}
 
 $customPaths = New-Object PSObject
 $customPaths | Add-Member -type NoteProperty -Name Root -Value $root
