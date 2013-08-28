@@ -9,7 +9,7 @@ function ReadProjectInformationFromSolution([string] $solutionContents) {
         $projectInfo = [PsCustomObject] @{
             Name = $match.Groups[2];
             Path = $match.Groups[3];
-            Id = $match.Groups[1];
+            Id = $match.Groups[4];
         }
 
         $results += $projectInfo;

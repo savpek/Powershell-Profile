@@ -16,11 +16,11 @@ Describe "Function: ReadProjectInformationFromSolution.Tests" {
         $results = ReadProjectInformationFromSolution $testData
 
         $results.Count | Should Be 2
-        $results[0].Id | Should Be "FAE04EC0-301F-11D3-BF4B-00C04F79EFBC"
+        $results[0].Id | Should Be "522F42A5-BF3F-40E8-8AD0-B4DB587662FB"
         $results[0].Path | Should Be "Path\Project1.csproj"
         $results[0].Name | Should Be "Project1"
 
-        $results[1].Id | Should Be "FAE04EC0-301F-11D3-BF4B-00C04F79EFBC"
+        $results[1].Id | Should Be "522F42A5-BF3F-40E8-8AD0-B4DB587662FB"
         $results[1].Path | Should Be "Path\Project2.csproj"
         $results[1].Name | Should Be "Project2"
     }
