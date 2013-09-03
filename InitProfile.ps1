@@ -6,6 +6,7 @@ $env:PSModulePath += ";$root\modules\"
 
 Import-Module PsGet
 Import-Module Custom
+Import-Module CSharp
 
 try {
     Import-Module Posh-Git
