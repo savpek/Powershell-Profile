@@ -12,5 +12,3 @@ function Get-TfsIterations([Parameter(Mandatory=$true)][string] $collectionUri) 
         }
     }
 }
-
-Get-TfsIterations "https://savpektfs.visualstudio.com/DefaultCollection/"

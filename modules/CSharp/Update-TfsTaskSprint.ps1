@@ -19,5 +19,3 @@ function Update-TfsTaskSprint(
         }
     }
 }
-
-Update-TfsTaskSprint "https://savpektfs.visualstudio.com/DefaultCollection/" "pekanTesti\Release 1\Sprint 3"
