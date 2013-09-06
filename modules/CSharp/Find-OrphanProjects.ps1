@@ -2,13 +2,11 @@ $psScriptRoot = Split-Path -parent $PSCommandPath
 
 . $psScriptRoot\Functions\ReadProjectInformationFromSolution.ps1
 
-
-
-function Find-OrphanProjects([Parameter(Mandatory=$true)][String]$solutionFiles, [String[]]$searchRoot = ".\") {
+function Find-OrphanProjects([Parameter(Mandatory=$true)][String[]]$solutionFiles, [String]$searchRoot = ".\") {
     # Private methods.
     function CheckGuid($guids, $projectContents) {
         foreach($guid in $guids) {
-            if($projectContents -like "*$guid*") {
+            if($projectContents -like "*<ProjectGuid>{$guid}</ProjectGuid>*") {
                 return $true
             }
         }
@@ -34,7 +32,5 @@ function Find-OrphanProjects([Parameter(Mandatory=$true)][String]$solutionFiles,
         }
     }
 
-    foreach($project in $invalidProjects) {
-        "$project"
-    }
+    return $invalidProjects
 }
