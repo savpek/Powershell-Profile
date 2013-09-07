@@ -1,13 +1,18 @@
 $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 
+Get-ChildItem -Recurse $scriptPath\* | Unblock-File
+
 Add-Content $profile ". '$scriptPath\InitProfile.ps1'"
 
 Write-Host "Install chocolate package manager." -ForegroundColor Green
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
 Add-Content $profile "`$env:Path += `";C:\chocolatey\bin;`""
+$env:Path += ";C:\chocolatey\bin;"
 
-Write-Host "Installing git, remember to select add git commands to windows path option!" -ForegroundColor Green
-cinst git.commandline
+Write-Host "Installing git." -ForegroundColor Green
+cinst git
+Add-Content $profile "`$env:Path += `";C:\git\bin;`""
+$env:Path += ";C:\git\bin;"
 
 Write-Host "Installing poshgit!" -ForegroundColor Green
 cinst poshgit
@@ -35,3 +40,12 @@ cinst putty
 
 Write-Host "Insalling adobe reader." -ForegroundColor Green
 cinst adobereader
+
+Write-Host "Install greenshot." -ForegroundColor Green
+cinst greenshot
+
+Write-Host "Install linqPad4." -ForegroundColor Green
+cinst linqpad4
+
+Write-Host "Install LogExpert." -ForegroundColor Green
+cinst logexpert
