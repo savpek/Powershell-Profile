@@ -1,51 +1,62 @@
-$scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
+if(-not (Test-Path $profile)) {
+    New-Item -Force -ItemType file $profile
+}
 
-Get-ChildItem -Recurse $scriptPath\* | Unblock-File
+function InstallChocolatey() {
+    Write-Host "Install chocolate package manager." -ForegroundColor Green
+    powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
+    Add-Content $profile "`$env:Path += `";C:\chocolatey\bin;`""
+    $env:Path += ";${env:ProgramFiles(x86)}\Git\bin;"
+}
 
-Add-Content $profile ". '$scriptPath\InitProfile.ps1'"
+function Install([string]$Name, [string]$PathExtensionFolder = "") {
+    Write-Host "Installing $Name." -ForegroundColor Green
+    cinst $name
 
-Write-Host "Install chocolate package manager." -ForegroundColor Green
-powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
-Add-Content $profile "`$env:Path += `";C:\chocolatey\bin;`""
-$env:Path += ";C:\chocolatey\bin;"
+    if($PathExtensionFolder -ne "") {
+        $env:Path += ";$PathExtension;"
+        Add-Content $profile "`$env:Path += `";$PathExtensionFolder;`""
+    }
+}
 
-Write-Host "Installing git." -ForegroundColor Green
-cinst git
-Add-Content $profile "`$env:Path += `";C:\git\bin;`""
-$env:Path += ";C:\git\bin;"
+Function InstallPowerShellProfile() {
+    Write-Host "Install powershell profile." -ForegroundColor Green
+    $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 
-Write-Host "Installing poshgit!" -ForegroundColor Green
-cinst poshgit
+    $githubAddr = "https://github.com/savpek/Powershell-Profile.git"
+    $githubFolder = "${env:HomePath}\Documents\GitHub"
+    $profileFolder = "$githubFolder\Powershell-Profile"
 
-Write-Host "Installing notepad2." -ForegroundColor Green
-cinst notepad2
+    if(-not (Test-Path $githubFolder)) {
+        New-Item -ItemType Directory -Force $githubFolder
+    }
 
-Write-Host "Installing P4Merge." -ForegroundColor Green
-cinst P4Merge
+    Push-Location $githubFolder
 
-Write-Host "Installing DevBox settings for git (P4Merge, Notepad2 ...)." -ForegroundColor Green
-cinst Devbox-GitSettings
+    git clone $githubAddr
 
-Write-Host "Installing 7Zip." -ForegroundColor Green
-cinst 7zip.install
+    Push-Location $profileFolder
 
-Write-Host "Installing Pester." -ForegroundColor Green
-cinst pester
+    Get-ChildItem -Recurse $profileFolder\* | Unblock-File
 
-Write-Host "Installing Google Chrome" -ForegroundColor Green
-cinst GoogleChrome
+    Add-Content $profile ". '$profileFolder\InitProfile.ps1'"
+}
 
-Write-Host "Installing putty." -ForegroundColor Green
-cinst putty
+InstallChocolatey
 
-Write-Host "Insalling adobe reader." -ForegroundColor Green
-cinst adobereader
+Install "git" "C:\git\bin"
+Install "poshgit"
+Install "notepad2"
+Install "P4Merge"
+Install "7Zip"
+Install "Pester"
+Install "GoogleChrome"
+Install "putty"
+Install "adobereader"
+Install "greenshot"
+Install "linqPad4"
+Install "LogExpert"
 
-Write-Host "Install greenshot." -ForegroundColor Green
-cinst greenshot
+InstallPowerShellProfile
 
-Write-Host "Install linqPad4." -ForegroundColor Green
-cinst linqpad4
-
-Write-Host "Install LogExpert." -ForegroundColor Green
-cinst logexpert
+. $profile
