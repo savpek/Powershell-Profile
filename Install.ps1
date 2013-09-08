@@ -88,4 +88,7 @@ Copy-Item "$scriptPath\InstallationFiles\*.dxp" "${env:APPDATA}\Dexpot\Profile\"
 
 InstallPowerShellProfile
 
+Write-Host "Notes:" -ForegroundColor Green
+"Open dexpot and set Savpek profile, this step isn't automated."
+
 . $profile
