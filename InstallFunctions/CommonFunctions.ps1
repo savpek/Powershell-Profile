@@ -47,6 +47,6 @@ function GitHubClone([string]$repository, [string]$targetFolder) {
 
     Push-Location $targetFolder
         git clone $repository
-        Get-ChildItem -Recurse "$folder\*" | Unblock-File
+        Get-ChildItem -Recurse ".\*" | Unblock-File
     Pop-Location
 }

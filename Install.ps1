@@ -6,6 +6,9 @@ function Installer([string]$scriptPath) {
     . "$scriptPath\InstallFunctions\CommonFunctions.ps1"
     . "$scriptPath\InstallFunctions\CommonPaths.ps1"
 
+    CreateIfMissingFile $profile
+    CreateIfMissingDir $installerPaths.GitHub
+
     function InstallChocolatey() {
         Write-Host "Install chocolate package manager." -ForegroundColor Green
         powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
@@ -38,16 +41,16 @@ function Installer([string]$scriptPath) {
     ConfigurePowerShellProfile
 
     CreateIfMissingDir "${env:APPDATA}\Dexpot\Profile\"
-    Copy-Item "$scriptPath\InstallationFiles\*.dxp" "${env:APPDATA}\Dexpot\Profile\" -Force
+    Copy-Item "$($installerPaths.CustomShellProfile)\InstallationFiles\*.dxp" "${env:APPDATA}\Dexpot\Profile\" -Force
 
     function InstallWarmUp() {
         warmup addTextReplacement __CHOCO_PKG_OWNER_NAME__ "Savpek"
         warmup addTextReplacement __CHOCO_PKG_OWNER_REPO__ "savpek/Powershell-Profile/InstallationFiles"
         warmup addTextReplacement __CHOCO_AUTO_PKG_OWNER_REPO__ "savpek/Powershell-Profile/InstallationFiles"
 
-        Copy-Item "$($installerPaths.GitHub)\InstallationFiles\*" "C:\CODE\_templates\"
+        Copy-Item "$($installerPaths.CustomShellProfile)\InstallationFiles\*" "C:\CODE\_templates\"
     }
-    #InstallWarmUp
+    InstallWarmUp
 
     Write-Host "Notes:" -ForegroundColor Green
     "Open dexpot and set Savpek profile, this step isn't automated."
