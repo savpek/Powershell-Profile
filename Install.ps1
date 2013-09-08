@@ -1,12 +1,33 @@
+Set-StrictMode -Version Latest
+
 if(-not (Test-Path $profile)) {
     New-Item -Force -ItemType file $profile
+}
+
+function AddPathToEnvironment([string]$path) {
+    $env:Path += ";$path;"
+
+    if(-not (Get-Content $profile | Select-String -SimpleMatch "*;$path;*" -Quiet)) {
+        "Adding $path to path variables."
+        Add-Content $profile "`$env:Path += `";$path;`""
+    }
+}
+
+function GetDirectoryOfFile([string]$exeName) {
+    $executable = Get-ChildItem -Recurse -ErrorAction Ignore "C:\*$exeName" | Select -First 1 -ExpandProperty FullName 
+
+    if($executable) {
+        return (Split-Path -parent $executable)
+    }
+    else {
+        throw "Cannot locate exetutable: $exeName from C:\*"
+    }
 }
 
 function InstallChocolatey() {
     Write-Host "Install chocolate package manager." -ForegroundColor Green
     powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
-    Add-Content $profile "`$env:Path += `";C:\chocolatey\bin;`""
-    $env:Path += ";C:\chocolatey\bin;"
+    AddPathToEnvironment ";C:\chocolatey\bin;"
 }
 
 function Install([string]$Name, [string]$exeName = "") {
@@ -14,18 +35,8 @@ function Install([string]$Name, [string]$exeName = "") {
     cinst $name
 
     if($exeName -ne "") {
-        $executable = Get-ChildItem -Recurse -ErrorAction Ignore "C:\*$exeName" | Select -First 1 -ExpandProperty FullName 
-
-        if($executable) {
-            $exePath = Split-Path -parent $executable
-
-            "Adding $exePath to path variables."
-            $env:Path += ";$exePath;"
-            Add-Content $profile "`$env:Path += `";$exePath;`""
-        }
-        else {
-            Write-Host "Cannot locate exetutable: $exeName from C:\*" -ForegroundColor Yellow
-        }
+        $path = GetDirectoryOfFile $exeName
+        AddPathToEnvironment $path
     }
 }
 
