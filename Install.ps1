@@ -1,94 +1,58 @@
 Set-StrictMode -Version Latest
 
-if(-not (Test-Path $profile)) {
-    New-Item -Force -ItemType file $profile
-}
+$scriptPath = split-path -parent $MyInvocation.MyCommand.Definition;
 
-function AddPathToEnvironment([string]$path) {
-    $env:Path += ";$path;"
+function Installer([string]$scriptPath) {
+    . "$scriptPath\InstallFunctions\CommonFunctions.ps1"
+    . "$scriptPath\InstallFunctions\CommonPaths.ps1"
 
-    if(-not (Get-Content $profile | Select-String -SimpleMatch "*;$path;*" -Quiet)) {
-        "Adding $path to path variables."
-        Add-Content $profile "`$env:Path += `";$path;`""
-    }
-}
-
-function GetDirectoryOfFile([string]$exeName) {
-    $executable = Get-ChildItem -Recurse -ErrorAction Ignore "C:\*$exeName" | Select -First 1 -ExpandProperty FullName 
-
-    if($executable) {
-        return (Split-Path -parent $executable)
-    }
-    else {
-        throw "Cannot locate exetutable: $exeName from C:\*"
-    }
-}
-
-function InstallChocolatey() {
-    Write-Host "Install chocolate package manager." -ForegroundColor Green
-    powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
-    AddPathToEnvironment ";C:\chocolatey\bin;"
-}
-
-function Install([string]$Name, [string]$exeName = "") {
-    Write-Host "Installing $Name." -ForegroundColor Green
-    cinst $name
-
-    if($exeName -ne "") {
-        $path = GetDirectoryOfFile $exeName
-        AddPathToEnvironment $path
-    }
-}
-
-Function InstallPowerShellProfile() {
-    Write-Host "Install powershell profile." -ForegroundColor Green
-    $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
-
-    $githubAddr = "https://github.com/savpek/Powershell-Profile.git"
-    $githubFolder = "${env:HomePath}\Documents\GitHub"
-    $profileFolder = "$githubFolder\Powershell-Profile"
-
-    if(-not (Test-Path $githubFolder)) {
-        New-Item -ItemType Directory -Force $githubFolder
+    function InstallChocolatey() {
+        Write-Host "Install chocolate package manager." -ForegroundColor Green
+        powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
+        AddPathToEnvironment ";C:\chocolatey\bin;"
     }
 
-    Push-Location $githubFolder
+    InstallChocolatey
+    Install "git" "git.exe"
+    Install "poshgit"
+    Install "notepad2"
+    Install "winmerge" "WinMergeU.exe"
+    Install "7Zip"
+    Install "Pester"
+    Install "GoogleChrome"
+    Install "putty" "putty.exe"
+    Install "adobereader"
+    Install "greenshot"
+    Install "linqPad4"
+    Install "LogExpert"
+    Install "Dexpot"
+    Install "warmup" "nuget.exe"
 
-    git clone $githubAddr
+    function ConfigurePowerShellProfile() {
+        Write-Host "Install powershell profile." -ForegroundColor Green
+        
+        GitHubClone "https://github.com/savpek/Powershell-Profile.git" $installerPaths.GitHub
+        
+        Add-Content $profile ". '$($installerPaths.CustomShellProfile)\InitProfile.ps1'"
+    }
+    ConfigurePowerShellProfile
 
-    Push-Location $profileFolder
+    CreateIfMissingDir "${env:APPDATA}\Dexpot\Profile\"
+    Copy-Item "$scriptPath\InstallationFiles\*.dxp" "${env:APPDATA}\Dexpot\Profile\" -Force
 
-    Get-ChildItem -Recurse $profileFolder\* | Unblock-File
+    function InstallWarmUp() {
+        warmup addTextReplacement __CHOCO_PKG_OWNER_NAME__ "Savpek"
+        warmup addTextReplacement __CHOCO_PKG_OWNER_REPO__ "savpek/Powershell-Profile/InstallationFiles"
+        warmup addTextReplacement __CHOCO_AUTO_PKG_OWNER_REPO__ "savpek/Powershell-Profile/InstallationFiles"
 
-    Add-Content $profile ". '$profileFolder\InitProfile.ps1'"
+        Copy-Item "$($installerPaths.GitHub)\InstallationFiles\*" "C:\CODE\_templates\"
+    }
+    #InstallWarmUp
+
+    Write-Host "Notes:" -ForegroundColor Green
+    "Open dexpot and set Savpek profile, this step isn't automated."
 }
 
-$scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
-
-InstallChocolatey
-Install "git" "git.exe"
-Install "poshgit"
-Install "notepad2"
-Install "winmerge" "WinMergeU.exe"
-Install "7Zip"
-Install "Pester"
-Install "GoogleChrome"
-Install "putty" "putty.exe"
-Install "adobereader"
-Install "greenshot"
-Install "linqPad4"
-Install "LogExpert"
-Install "Dexpot"
-
-if(-not (Test-Path "${env:APPDATA}\Dexpot\Profile\")) {
-    New-Item -ItemType Directory "${env:APPDATA}\Dexpot\Profile\" -Force
-}
-
-Copy-Item "$scriptPath\InstallationFiles\*.dxp" "${env:APPDATA}\Dexpot\Profile\" -Force
-
-InstallPowerShellProfile
-
-Write-Host "Notes:" -ForegroundColor Green
-"Open dexpot and set Savpek profile, this step isn't automated."
+Installer $scriptPath
 
 . $profile
