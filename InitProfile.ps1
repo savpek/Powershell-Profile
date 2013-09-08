@@ -17,5 +17,5 @@ foreach($moduleFolder in (Get-ChildItem -Directory "$root\modules\"))
 
 git config --global user.email "savolainen.pekka@gmail.com"
 git config --global user.name "Savpek"
-
+git config --global core.autocrlf true
 $env:GIT_EDITOR = "notepad"
