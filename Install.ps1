@@ -68,7 +68,12 @@ Install "greenshot"
 Install "linqPad4"
 Install "LogExpert"
 Install "Dexpot"
-Copy-Item "$scriptPath\InstallationFiles\*.dxp" "${env:APPDATA}\Dexpot\Profile\"
+
+if(-not (Test-Path "${env:APPDATA}\Dexpot\Profile\")) {
+    New-Item -ItemType Directory "${env:APPDATA}\Dexpot\Profile\" -Force
+}
+
+Copy-Item "$scriptPath\InstallationFiles\*.dxp" "${env:APPDATA}\Dexpot\Profile\" -Force
 
 InstallPowerShellProfile
 
