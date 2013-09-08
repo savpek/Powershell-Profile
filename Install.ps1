@@ -6,7 +6,7 @@ function InstallChocolatey() {
     Write-Host "Install chocolate package manager." -ForegroundColor Green
     powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
     Add-Content $profile "`$env:Path += `";C:\chocolatey\bin;`""
-    $env:Path += ";${env:ProgramFiles(x86)}\Git\bin;"
+    $env:Path += ";C:\chocolatey\bin;"
 }
 
 function Install([string]$Name, [string]$exeName = "") {

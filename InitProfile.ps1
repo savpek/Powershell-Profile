@@ -17,7 +17,7 @@ foreach($moduleFolder in (Get-ChildItem -Directory "$root\modules\"))
 
 git config --global user.email "savolainen.pekka@gmail.com"
 git config --global user.name "Savpek"
-git config --global core.autocrlf false
+git config --global core.autocrlf true
 
 git config --global merge.tool winmerge
 git config --global mergetool.winmerge.cmd 'winmergeu.exe -e -u -x -wl -wr -dl "base" -dr "mine" "$LOCAL" "$REMOTE"'
