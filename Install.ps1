@@ -9,13 +9,23 @@ function InstallChocolatey() {
     $env:Path += ";${env:ProgramFiles(x86)}\Git\bin;"
 }
 
-function Install([string]$Name, [string]$PathExtensionFolder = "") {
+function Install([string]$Name, [string]$exeName = "") {
     Write-Host "Installing $Name." -ForegroundColor Green
     cinst $name
 
-    if($PathExtensionFolder -ne "") {
-        $env:Path += ";$PathExtension;"
-        Add-Content $profile "`$env:Path += `";$PathExtensionFolder;`""
+    if($exeName -ne "") {
+        $executable = Get-ChildItem -Recurse -ErrorAction Ignore "C:\*$exeName" | Select -First 1 -ExpandProperty FullName 
+
+        if($executable) {
+            $exePath = Split-Path -parent $executable
+
+            "Adding $exePath to path variables."
+            $env:Path += ";$exePath;"
+            Add-Content $profile "`$env:Path += `";$exePath;`""
+        }
+        else {
+            Write-Host "Cannot locate exetutable: $exeName from C:\*" -ForegroundColor Yellow
+        }
     }
 }
 
@@ -43,15 +53,14 @@ Function InstallPowerShellProfile() {
 }
 
 InstallChocolatey
-
-Install "git" "C:\git\bin"
+Install "git" "git.exe"
 Install "poshgit"
 Install "notepad2"
-Install "P4Merge"
+Install "winmerge" "WinMergeU.exe"
 Install "7Zip"
 Install "Pester"
 Install "GoogleChrome"
-Install "putty"
+Install "putty" "putty.exe"
 Install "adobereader"
 Install "greenshot"
 Install "linqPad4"
