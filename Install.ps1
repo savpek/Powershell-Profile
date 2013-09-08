@@ -52,6 +52,8 @@ Function InstallPowerShellProfile() {
     Add-Content $profile ". '$profileFolder\InitProfile.ps1'"
 }
 
+$scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
+
 InstallChocolatey
 Install "git" "git.exe"
 Install "poshgit"
@@ -65,6 +67,8 @@ Install "adobereader"
 Install "greenshot"
 Install "linqPad4"
 Install "LogExpert"
+Install "Dexpot"
+Copy-Item "$scriptPath\InstallationFiles\*.dxp" "${env:APPDATA}\Dexpot\Profile\"
 
 InstallPowerShellProfile
 
