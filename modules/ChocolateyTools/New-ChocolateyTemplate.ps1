@@ -6,15 +6,15 @@ function New-ChocolateyTemplate {
         [Parameter(Mandatory=$true)][string]$Author,
         [Parameter(Mandatory=$true)][string]$HomePage)
 
-    New-item -ItemType directory -Force ".\$Name.install"
-    New-Item -ItemType directory -Force ".\$Name.install\tools\"
-    New-Item -ItemType directory -Force ".\$Name.install\contents\"
+    New-item -ItemType directory -Force ".\$Name"
+    New-Item -ItemType directory -Force ".\$Name\tools\"
+    New-Item -ItemType directory -Force ".\$Name\contents\"
 
     $nuspecFile = @"
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-    <id>$Name.install</id>
+    <id>$Name</id>
     <title>$Name (Install)</title>
     <version>$Version</version>
     <authors>$Author</authors>
@@ -39,8 +39,8 @@ function New-ChocolateyTemplate {
 </package>
 "@
 
-    Set-Content -Force ".\$Name.install\$Name.install.nuspec" $nuspecFile
-    PsEdit ".\$Name.install\$Name.install.nuspec"
+    Set-Content -Force ".\$Name\$Name.nuspec" $nuspecFile
+    PsEdit ".\$Name\$Name.nuspec"
 
     $installerFile = @"
 #NOTE: Please remove any commented lines to tidy up prior to releasing the package, including this one
@@ -57,6 +57,6 @@ function New-ChocolateyTemplate {
 Install-ChocolateyPackage "`$packageName" "`$installerType" "`$silentArgs" "`$url" "`$url64"  -validExitCodes `$validExitCodes
 "@
 
-    Set-Content -Force ".\$Name.install\tools\chocolateyInstall.ps1" $installerFile
-    PsEdit ".\$Name.install\tools\chocolateyInstall.ps1"
+    Set-Content -Force ".\$Name\tools\chocolateyInstall.ps1" $installerFile
+    PsEdit ".\$Name\tools\chocolateyInstall.ps1"
 }
