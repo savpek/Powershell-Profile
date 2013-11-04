@@ -1,16 +1,23 @@
 function Update-TfsTaskSprint(
-        [Parameter(Mandatory=$true)][string] $tfsServerCollectionUri, 
-        [Parameter(Mandatory=$true)][string] $newSprintPath, 
+        [Parameter(Mandatory=$true)][string] $TfsServerCollectionUri, 
+        [Parameter(Mandatory=$true)][string] $NewSprintPath,
+        [Parameter(Mandatory=$true)][string] $Project,
         [switch]$WhatIf) {
-    $storage = Get-TfsWorkItemStorage "https://savpektfs.visualstudio.com/DefaultCollection/"
+    $storage = Get-TfsWorkItemStorage $tfsServerCollectionUri
 
-    $results = $storage.Query("select * from Issue where [Work Item Type] contains 'Task' and [State] <> 'Done'")
+    $results = $storage.Query("select * from Issue where 
+                                        [Work Item Type] contains 'Task'                                      
+                                    and [State] <> 'Done' 
+                                    and [State] <> 'Removed'    
+                                    and [Team Project] = '$Project'")
+
+    $results = $results | where { $_.IterationPath -like "*\*" }
 
     foreach($workItem in $results) {
-        "Updating '" + $workItem.Title + "' to sprint '" + $newSprintPath + "'"
+        "Updating '$($workItem.Title)' from '$($workItem.IterationPath)' to sprint '$($newSprintPath)', current state: '$($workitem.State)'"
 
         if($WhatIf) {
-            "No changes made because WhatIf flag."
+            Write-Host -ForegroundColor Yellow "No changes made because WhatIf flag."
         }
         else {
             $workItem.Open();
