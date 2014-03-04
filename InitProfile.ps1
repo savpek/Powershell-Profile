@@ -13,6 +13,7 @@ $customPaths | Add-Member -type NoteProperty -Name Root -Value $root
 foreach($moduleFolder in (Get-ChildItem -Directory "$root\modules\")) 
 {
     $customPaths | Add-Member -type NoteProperty -Name $moduleFolder.Name -Value $moduleFolder.FullName
+    Import-Module $moduleFolder
 }
 
 git config --global user.email "savolainen.pekka@gmail.com"
