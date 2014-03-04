@@ -1,16 +1,14 @@
 Set-StrictMode -Version Latest
 
 Function Open-Notepads {
-    PROCESS {
-        if($_.Path -ne "") 
-        {
-            $filePath = $_.Path;
-        }
-        else {
-            $filePath = $_.FullName;
-        }
+    [CmdLetBinding()]
+    Param(
+        [Alias("FullName")]
+        [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]$Path
+    )
 
-        $command = 'Notepad2 /g "' + $_.LineNumber + ',0" "' + $filePath + '"';
+    PROCESS {
+        $command = 'Notepad2 /g "' + $_.LineNumber + ',0" "' + $Path + '"';
         $command;
         Invoke-Expression $command;
     }
