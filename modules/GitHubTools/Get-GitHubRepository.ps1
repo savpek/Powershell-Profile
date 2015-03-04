@@ -1,9 +1,14 @@
 function Get-GitHubRepository {
-    param(
-    [Parameter(ValueFromPipeline=$true, Mandatory=$true)]$uri
-    );
+    [CmdLetBinding()]
+    Param($Like = "")
+    $response = Invoke-WebRequest -Uri "https://api.github.com/users/savpek/repos?per_page=100" -Method Get
 
-    process {
-        Invoke-Expression "git clone $uri"
+    if($response.StatusCode -ne "200") {
+        throw "Invalid response code."
     }
+
+    $uris = $response.Content | ConvertFrom-Json | foreach { $_.html_url } | where { $_ -like "*$Like*" }
+
+    return $uris
 }
+
