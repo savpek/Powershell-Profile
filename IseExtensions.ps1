@@ -8,3 +8,39 @@ $menu.Add("ShowMethodCode", {
 $menu.Add("TfsCheckout", {
     tf checkout $psISE.CurrentFile.FullPath
 }, "Ctrl+Alt+T") | out-null
+
+$Script:DebugOnErrorToggle = $false
+$Script:ToggleDebugging = {
+    if($Script:DebugOnErrorToggle) {
+        Write-Host "Debug on error disabled" -ForegroundColor Yellow
+        $Script:DebugOnErrorToggle = $false
+    }
+    else {
+        Write-Host "Debug on error enabled" -ForegroundColor green
+        $Script:DebugOnErrorToggle = $true
+    }
+}
+
+function Set-DebugOnError {
+    param(
+	    [Parameter()]
+	    [string[]]$Script,
+	    [scriptblock]$Action,
+	    [switch]$Off
+    )
+
+    Get-PSBreakpoint -Variable StackTrace | Remove-PSBreakpoint
+
+    if (!$Off) {
+	    if ($Script) {
+		    $null = Set-PSBreakpoint -Variable StackTrace -Mode Write -Action $Action -Script $Script
+	    }
+	    else {
+		    $null = Set-PSBreakpoint -Variable StackTrace -Mode Write -Action $Action
+	    }
+    }
+}
+
+$menu.Add("ToggleDebugError", {
+    . $ToggleDebugging
+}, "Ctrl+Alt+E") | out-null
