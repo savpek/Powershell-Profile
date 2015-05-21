@@ -25,3 +25,5 @@ git config --global mergetool.winmerge.cmd 'winmergeu.exe -e -u -x -wl -wr -dl "
 git config --global mergetool.keepBackup false
 
 $env:GIT_EDITOR = "notepad"
+
+. $root\IseExtensions.ps1
