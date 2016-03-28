@@ -27,3 +27,5 @@ git config --global mergetool.keepBackup false
 $env:GIT_EDITOR = "notepad"
 
 . $root\IseExtensions.ps1
+
+Set-Alias Invoke-Interactive ii
