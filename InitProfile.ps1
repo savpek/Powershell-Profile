@@ -26,4 +26,6 @@ git config --global mergetool.keepBackup false
 
 $env:GIT_EDITOR = "notepad"
 
-. $root\IseExtensions.ps1
+if($psIse) {
+    . $root\IseExtensions.ps1
+}
