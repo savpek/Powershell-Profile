@@ -7,17 +7,19 @@ $menu.Add("ShowMethodCode", {
 
 $menu.Add("TfsCheckout", {
     tf checkout $psISE.CurrentFile.FullPath
-}, "Ctrl+Alt+T") | out-null
+}, $null) | out-null
 
 $Script:DebugOnErrorToggle = $false
 $Script:ToggleDebugging = {
     if($Script:DebugOnErrorToggle) {
         Write-Host "Debug on error disabled" -ForegroundColor Yellow
         $Script:DebugOnErrorToggle = $false
+        Set-DebugOnError -Off
     }
     else {
         Write-Host "Debug on error enabled" -ForegroundColor green
         $Script:DebugOnErrorToggle = $true
+        Set-DebugOnError
     }
 }
 
