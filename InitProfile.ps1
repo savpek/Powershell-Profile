@@ -1,6 +1,5 @@
 ﻿$root = Split-Path -parent $PSCommandPath
 
-. $root\IseTheme.ps1
 
 $env:PSModulePath += ";$root\modules\"
 
@@ -20,12 +19,13 @@ git config --global user.email "savolainen.pekka@gmail.com"
 git config --global user.name "Savpek"
 git config --global core.autocrlf true
 
-git config --global merge.tool winmerge
-git config --global mergetool.winmerge.cmd 'winmergeu.exe -e -u -x -wl -wr -dl "base" -dr "mine" "$LOCAL" "$REMOTE"'
+git config --global core.editor "code --wait"
+
 git config --global mergetool.keepBackup false
 
 $env:GIT_EDITOR = "notepad"
 
 if($psIse) {
     . $root\IseExtensions.ps1
+    . $root\IseTheme.ps1
 }
