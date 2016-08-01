@@ -4,8 +4,8 @@ Function Open-Notepads {
     [CmdLetBinding()]
     Param(
         [Alias("FullName")]
-        [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]$Path,
-        [parameter(ValueFromPipelineByPropertyName=$true)]$Pattern
+        [parameter(Mandatory,ValueFromPipelineByPropertyName=$true)]$Path,
+        [parameter(ValueFromPipelineByPropertyName)]$Pattern
     )
 
     Begin {
@@ -15,9 +15,17 @@ Function Open-Notepads {
     PROCESS {
         if($opened -contains $Path) {            return
         }
-        $command = "Notepad /m '$pattern' '$Path'";
-        $command;
-        Invoke-Expression $command;
+
+        if((Get-Item $Path) -is [System.IO.DirectoryInfo]) {
+            return
+        }
+
+        if($Pattern) {
+            notepad /m "$pattern" "$Path"
+        }
+        else {
+            notepad "$path"
+        }
         $opened += $Path
     }
 }
