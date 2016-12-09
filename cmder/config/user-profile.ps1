@@ -23,3 +23,27 @@
 
 ## <Continue to add your own>
 
+$env:PSModulePath += ";$PsScriptRoot\..\..\modules\"
+Import-Module Custom
+
+git config --global user.email "savolainen.pekka@gmail.com"
+git config --global user.name "Savpek"
+git config --global core.autocrlf true
+
+git config --global core.editor "code --wait"
+
+git config --global mergetool.keepBackup false
+
+$env:GIT_EDITOR = "notepad"
+
+$HistoryFilePath = Join-Path ([Environment]::GetFolderPath('UserProfile')) .ps_history
+Register-EngineEvent PowerShell.Exiting -Action { 
+    Get-History |
+        Where { $_.ToString() -notlike "ls*" } |
+        Where { $_.ToString() -notlike "cd*" } |
+        Export-Clixml $HistoryFilePath
+} | out-null
+
+if (Test-path $HistoryFilePath) { 
+    Import-Clixml $HistoryFilePath | Add-History 
+}

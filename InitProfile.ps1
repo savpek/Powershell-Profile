@@ -29,3 +29,15 @@ if($psIse) {
     . $root\IseExtensions.ps1
     . $root\IseTheme.ps1
 }
+
+$HistoryFilePath = Join-Path ([Environment]::GetFolderPath('UserProfile')) .ps_history
+Register-EngineEvent PowerShell.Exiting -Action { 
+    Get-History |
+        Where { $_.ToString() -notlike "ls*" } |
+        Where { $_.ToString() -notlike "cd*" } |
+        Export-Clixml $HistoryFilePath
+} | out-null
+
+if (Test-path $HistoryFilePath) { 
+    Import-Clixml $HistoryFilePath | Add-History 
+}
