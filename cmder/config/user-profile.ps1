@@ -47,3 +47,7 @@ Register-EngineEvent PowerShell.Exiting -Action {
 if (Test-path $HistoryFilePath) { 
     Import-Clixml $HistoryFilePath | Add-History 
 }
+
+if(Test-Path C:\github) {
+    Push-Location C:\github
+}
