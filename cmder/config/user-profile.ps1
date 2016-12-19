@@ -24,6 +24,8 @@
 ## <Continue to add your own>
 
 $env:PSModulePath += ";$PsScriptRoot\..\..\modules\"
+$env:Path += ";$PsScriptRoot\..\..\tools\"
+
 Import-Module Custom
 
 git config --global user.email "savolainen.pekka@gmail.com"
