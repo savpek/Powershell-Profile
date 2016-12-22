@@ -25,6 +25,8 @@
 
 $env:PSModulePath += ";$PsScriptRoot\..\..\modules\"
 $env:Path += ";$PsScriptRoot\..\..\tools\"
+$env:Path += ";$PsScriptRoot\..\..\tools\ssh\"
+# $env:GIT_SSH += (Resolve-Path "$PsScriptRoot\..\..\tools\plink.exe").Path
 
 Import-Module Custom
 
