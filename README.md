@@ -1,5 +1,5 @@
-Powershell-Profile
+Common tools (win)
 ==================
-Install Mysgit with install git to windows path.
+Install git for windows (or equivalent.)
 clone repository and run Install.ps1.
 
